@@ -16,6 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from cards.views import index, LoginLoginView, LogoutLogoutView, cards_add, delete_card
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login', LoginLoginView.as_view(), name='login'),
+    path('', index, name='index'),
+    path('logout/', LogoutLogoutView.as_view(), name='logout'),
+    path('cards_add', cards_add, name='cards_add'),
+    path('delete_card/<str:serial><str:number>', delete_card, name='delete_card')
 ]
