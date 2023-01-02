@@ -1,3 +1,4 @@
+import random
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
@@ -7,8 +8,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 
-from cards.forms import UserLoginForm, CardAddForm
-from cards.models import Card
+from cards.forms import UserLoginForm, CardAddForm, CardEditForm
+from cards.models import Card, CardHistory
 
 
 @login_required(login_url='login')
@@ -56,7 +57,23 @@ def cards_add(request):
     return render(request, 'cards/cards_add.html', context)
 
 
-def delete_card(serial:str, number: str):
+def delete_card(request, serial, number):
     card = Card.objects.filter(serial=serial, number=number).first()
     card.delete()
     return redirect('index')
+
+
+def card_edit(request, serial, number):
+    card = Card.objects.filter(serial=serial, number=number).first()
+    if request.method == "POST":
+        card_stat = CardHistory.objects.create(card=card, sum=random.randint(1, 1000000))
+        card_stat.save()
+        form = CardEditForm(request.POST)
+        if form.is_valid():
+            status = form.cleaned_data.get('edit')
+            card.status = status
+            card.save()
+    statistic = CardHistory.objects.filter(card=card)
+    form = CardEditForm(initial={'edit': card.status, })
+    context = {'card': card, 'form': form, 'statistics': statistic}
+    return render(request, 'cards/card_edit.html', context)

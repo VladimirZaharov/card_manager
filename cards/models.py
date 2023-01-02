@@ -14,7 +14,7 @@ class Card(models.Model):
     )
 
     serial = models.CharField(max_length=8, blank=True)
-    number = CardNumberField(null=True, max_length=8, unique=True, editable=False)
+    number = CardNumberField(null=True, max_length=8, editable=False)
     date_of_issue = models.DateTimeField(null=True, blank=True)
     expiration_date = models.DateTimeField(null=True, blank=True)
     sum = models.DecimalField(default=0, max_digits=9, decimal_places=2)

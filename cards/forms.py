@@ -21,3 +21,13 @@ class CardAddForm(forms.Form):
         'class': 'form-control', 'placeholder': 'Введите серию карт'}))
     validity = forms.IntegerField(widget=forms.NumberInput(attrs={
         'class': 'form-control', 'placeholder': 'Введите срок действия карт (количество дней)'}))
+
+
+class CardEditForm(forms.Form):
+    CHOICES = [
+        ('A', 'ACTIVE'),
+        ('N', 'NOT ACTIVE'),
+        ('E', 'EXPIRED'),
+    ]
+
+    edit = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)

@@ -73,6 +73,13 @@
 
 
 
+
+
+
+
+
+
+
     </style>
 
 
@@ -105,16 +112,19 @@
 
     <div class="container">
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+            <a href="#" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
                     <use xlink:href="#bootstrap"/>
                 </svg>
             </a>
 
 
-            <div class="col-md-3 text-end">
-                <a href="cards_add">
-                    <button type="button" class="btn btn-outline-primary me-2">Добавить карты</button>
+            <div style="width:40%" class="col-md-3 text-end">
+                <a href="index">
+                    <button type="button" class="btn btn-outline-primary me-2">На главную</button>
+                </a>
+                <a href="{% url 'delete_card' card.serial card.number %}">
+                    <button type="button" class="btn btn-outline-primary me-2">Удалить карту</button>
                 </a>
                 <a href="logout">
                     <button type="button" class="btn btn-primary">Выйти</button>
@@ -123,11 +133,11 @@
         </header>
     </div>
 
-
+    {% if card %}
     <div class="list-group w-auto">
-        {% if cards %}
-        {% for card in cards %}
-        <a href="{% url 'card_edit' card.serial card.number %}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+
+
+        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
             <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32"
                  class="rounded-circle flex-shrink-0">
             <div class="d-flex gap-2 w-100 justify-content-between">
@@ -155,23 +165,69 @@
 
                         </tbody>
                     </table>
-
+                    <form action="{% url 'card_edit' card.serial card.number %}" method="post">
+                        {% csrf_token %}
+                        <div style="margin-top: 10px">
+                            <label style="padding-right: 10px" type="text" placeholder="">Статус</label>
+                            {{ form.edit }}<br><br>
+                        </div>
+                        <button class="btn btn-outline-primary me-2" type=submit>Сохранить изменения</button>
+                    </form>
 
                 </div>
 
             </div>
         </a>
-        <a href="{% url 'delete_card' card.serial card.number %}">
-            <button type="button" class="btn btn-outline-primary me-2">Удалить карту</button>
-        </a>
 
-        <br><br>
-        {% endfor %}
-
-        {% else %}
-        <h6 class="mb-0">Карт пока нет</h6>
-        {% endif %}
     </div>
+    <br><br>
+    <div class="list-group w-auto">
+
+
+            <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32"
+                 class="rounded-circle flex-shrink-0">
+            <div class="d-flex gap-2 w-100 justify-content-between">
+                <div>
+                    <h6 class="mb-0">Статистика использования карты</h6>
+
+
+                    {% if statistics %}
+                    {% for statistic in statistics%}
+                    <table border="3" cellspacing="0" cellpadding="12">
+                        <tbody>
+                        <tr align="center">
+                            <td>Дата использования</td>
+                            <td>{{ statistic.date }}</td>
+                        </tr>
+                        <tr align="center">
+                            <td>Сумма</td>
+                            <td>{{ statistic.sum }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {% endfor %}
+                    {% else %}
+                    <table border="3" cellspacing="0" cellpadding="12">
+                        <tbody>
+                        <tr align="center">
+                            <td>Карта пока не использовалась</td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+    </div>
+    <br><br>
+    {% else %}
+    <h6 class="mb-0">Карта не найдена</h6>
+    {% endif %}
+
 </main>
 
 
